@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-web-service
+  namespace: default
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: mlw-lite-airflow-web
+
+spec:
+  type: LoadBalancer
+  selector:
+   airflow : web
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  - port: 22
+    targetPort: 22
+    name: ssh
+    protocol: TCP

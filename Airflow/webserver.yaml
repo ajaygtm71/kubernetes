@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-webserver
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      airflow: web
+  template:
+    metadata:
+      labels:
+        airflow: web
+    spec:
+      containers:
+      - name: airflow-web-container
+        image: mlworks.azurecr.io/k8s-airflow-mlw:05
+        imagePullPolicy: Always
+        args: ["webserver"]
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: azure
+          mountPath: /root/airflow/logs
+        - name: azure-dag
+          mountPath: /root/airflow/dags
+#        - name: susmita-airflow-configmap
+#          mountPath: /root/airflow/airflow.cfg
+      imagePullSecrets:
+      - name : airflow-test
+      volumes:
+      - name: azure
+        persistentVolumeClaim:
+          claimName: log-fileshare-pvc
+      - name: azure-dag
+        persistentVolumeClaim:
+          claimName: dag-fileshare-pvc
+#      - name: susmita-airflow-configmap
+#        configMap:
+#          name: susmita-airflow-configmap
+
+          #        volumeMounts:
+          #- name: airflow-configmap
+          #mountPath: /root/airflow/airflow.cfg
+          #subPath: airflow.cfg
+                #volumes:
+                # - name: airflow-configmap
+                #configMap:
+                #name: airflow-configmap

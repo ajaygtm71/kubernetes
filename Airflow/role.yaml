@@ -1,0 +1,10 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: default
+  name: airflow
+rules:
+- apiGroups: ["","extensions","batch", "apps","core","policy"] # "" indicates the core API group
+  resources: ["pods/log" ,"pods","jobs","nodes","services","deployments", "replicasets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
